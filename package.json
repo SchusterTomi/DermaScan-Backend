@@ -18,6 +18,9 @@
   },
   "homepage": "https://github.com/SchusterTomi/DermaScan-Backend#readme",
   "dependencies": {
-    "express": "^5.1.0"
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "hono": "^4.7.10",
+    "pg": "^8.16.0"
   }
 }
