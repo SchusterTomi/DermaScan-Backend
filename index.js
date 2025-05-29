@@ -1,26 +1,21 @@
 const express = require('express');
+const pool = require('./db'); // 👈 conectamos con Neon
+
 const app = express();
-app.use(express.json()); // Para leer JSON en los POST
+const PORT = 3000;
 
-// Ruta simple
-app.get('/', (req, res) => {
-  res.send("¡Tu backend anda!");
+app.use(express.json());
+
+app.get('/historial', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM historial');
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al obtener los historial');
+  }
 });
 
-// Ruta para crear paciente
-app.post('/paciente', (req, res) => {
-  const { nombre, edad, historial } = req.body;
-  // Acá después lo vamos a guardar en la base de datos
-  res.send(`Paciente ${nombre} creado (simulado)`);
-});
-
-// Ruta para traer datos de un paciente
-app.get('/paciente/:id', (req, res) => {
-  const id = req.params.id;
-  // Después vamos a buscarlo en la base de datos
-  res.send(`Buscando datos del paciente con ID: ${id} (simulado)`);
-});
-
-app.listen(3000, () => {
-  console.log("Servidor corriendo en http://localhost:3000");
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
