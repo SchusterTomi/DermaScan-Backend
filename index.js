@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const pool = require('./db');
+const imagenRoutes = require('./routes/imagen.routes'); // <--- esta línea debe ir arriba, antes de usarla
 
 const app = express();
 
@@ -8,7 +9,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Ruta de prueba para verificar conexión a la base de datos
+// Rutas
+app.use("/api/imagen", imagenRoutes); // <--- ya podés usarla
+
+// Ruta de prueba
 app.get('/test-db', async (req, res) => {
   try {
     const result = await pool.query('SELECT NOW()');
@@ -19,9 +23,7 @@ app.get('/test-db', async (req, res) => {
   }
 });
 
-// Puerto donde corre el servidor
 const PORT = process.env.PORT || 3001;
-
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
 });

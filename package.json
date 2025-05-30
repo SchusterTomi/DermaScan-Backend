@@ -18,8 +18,13 @@
   },
   "homepage": "https://github.com/SchusterTomi/DermaScan-Backend#readme",
   "dependencies": {
+    "cloudinary": "^2.6.1",
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "multer": "^2.0.0",
     "pg": "^8.16.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }
