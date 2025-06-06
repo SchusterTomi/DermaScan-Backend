@@ -1,8 +1,8 @@
 
 const express = require('express');
 const cors = require('cors');
-const pool = require('./db');
-const imagenRoutes = require('./routes/imagen.routes'); // <--- esta línea debe ir arriba, antes de usarla
+const pool = require('../db');
+const imagenRoutes = require('../routes/imagen.routes'); // <--- esta línea debe ir arriba, antes de usarla
 
 const app = express();
 
@@ -12,6 +12,8 @@ app.use(express.json());
 
 // Rutas
 app.use("/api/imagen", imagenRoutes); // <--- ya podés usarla
+
+module.exports = app;
 
 // Ruta de prueba
 app.get('/test-db', async (req, res) => {
