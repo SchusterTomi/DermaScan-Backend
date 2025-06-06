@@ -1,16 +1,14 @@
-const cloudinary = require("../cloudinary"); // importamos la config
+const cloudinary = require('../cloudinary');
 
-function subirImagenACloudinary(buffer) {
+const subirImagenACloudinary = async (buffer) => {
   return new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      { folder: "mi_proyecto" },
-      (error, result) => {
-        if (error) reject(error);
-        else resolve(result.secure_url);
-      }
-    );
+    const stream = cloudinary.uploader.upload_stream({ resource_type: 'image' }, (error, result) => {
+      if (error) return reject(error);
+      resolve(result.secure_url);
+    });
+
     stream.end(buffer);
   });
-}
+};
 
-module.exports = { subirImagenACloudinary,};
+module.exports = { subirImagenACloudinary };

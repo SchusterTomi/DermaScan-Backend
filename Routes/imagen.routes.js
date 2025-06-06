@@ -1,12 +1,11 @@
-const express = require("express");
-const multer = require("multer");
-const { uploadImage } = require("../controllers/imagen.controllers");
-
+const express = require('express');
 const router = express.Router();
-const storage = multer.memoryStorage();
+const multer = require('multer');
+const storage = multer.memoryStorage();  // guardar en memoria para subir luego a Cloudinary
 const upload = multer({ storage });
 
-// Ruta POST que recibe imagen
-router.post("/upload", upload.single("imagen"), uploadImage);
+const { uploadImage } = require('../controllers/imagen.controllers');
+
+router.post('/upload', upload.single('imagen'), uploadImage);
 
 module.exports = router;
