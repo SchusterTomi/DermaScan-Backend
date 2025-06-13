@@ -10,6 +10,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// LO QUE ME PIDIO VIGI EN EL 1 SPRINT
+
+app.get('/hola', (req, res) => {
+  res.json({ mensaje: 'sprint1 🎉' });
+});
+
+
 const upload = multer({ storage: multer.memoryStorage() });
 
 app.get('/test-db', async (req, res) => {
