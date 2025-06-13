@@ -2,9 +2,9 @@
 const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
-const pool = require('./db');
+const pool = require('../db');
 const multer = require('multer');
-const cloudinary = require('./cloudinary');
+const cloudinary = require('../cloudinary');
 
 const app = express();
 app.use(cors());
