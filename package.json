@@ -1,33 +1,15 @@
 {
   "name": "dermascan-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "api/index.js",
-  "type": "commonjs",
+  "main": "index.js",
   "scripts": {
-    "start": "node api/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/SchusterTomi/DermaScan-Backend.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/SchusterTomi/DermaScan-Backend/issues"
-  },
-  "homepage": "https://github.com/SchusterTomi/DermaScan-Backend#readme",
   "dependencies": {
     "cloudinary": "^2.6.1",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
-    "multer": "^2.0.0",
-    "pg": "^8.16.0"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.10"
+    "multer": "^2.0.0"
   }
 }
