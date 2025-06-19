@@ -3,7 +3,7 @@
 const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
-const cloudinary = require('./cloudinary');
+const cloudinary = require('../cloudinary');
 const pool = require('./db');
 require('dotenv').config();
 
