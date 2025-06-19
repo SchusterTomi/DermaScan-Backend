@@ -14,7 +14,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// CONFIGURACION DE MULTER (Subida de imagen a Cloudinary)
+// CONFIGURACION DE MULTER 
 
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -31,7 +31,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 // });
 
 
-
+// Subida de imagen a Cloudinary
 app.post('/api/imagen/upload', upload.single('imagen'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'No file' });
