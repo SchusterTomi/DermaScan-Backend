@@ -81,7 +81,7 @@ app.post('/api/paciente', async (req, res) => {
 });
 
 // FUNCIONALIDAD
-// (IMÁGENES)
+// (FUTURA) (IMÁGENES)
 
  app.post('/imagen/upload', upload.single('imagen'), async (req, res) => {
    try {
