@@ -69,7 +69,7 @@ app.post('/api/paciente', async (req, res) => {
 
     // Insertamos el paciente y retornamos el registro insertado
     const result = await pool.query(
-      'INSERT INTO Pacientes (nombre, apellido, dni, gmail) VALUES ($1, $2, $3, $4) RETURNING *',
+      'INSERT INTO pacientes (nombre, apellido, dni, gmail) VALUES ($1, $2, $3, $4) RETURNING *',
       [nombre, apellido, dni, gmail]
     );
 
@@ -83,29 +83,29 @@ app.post('/api/paciente', async (req, res) => {
 // FUNCIONALIDAD
 // (FUTURA) (IMÁGENES)
 
-// app.post('/imagen/upload', upload.single('imagen'), async (req, res) => {
-//   try {
-//     if (!req.file) return res.status(400).json({ error: 'No file' });
-//     const buffer = req.file.buffer;
-//     const uploadStream = cloudinary.uploader.upload_stream(
-//       { resource_type: 'image' },
-//       (err, result) => {
-//         if (err) {
-//           console.error('Cloud error', err); 
-//           return res.status(500).json({ error: err.message });
-//         }
-//         res.json({ url: result.secure_url });
-//       }
-//     );
-//     uploadStream.end(buffer);
-//   } catch (e) {
-//     console.error(e);
-//     res.status(500).json({ error: e.message });
-//   }
-// });
+ app.post('/imagen/upload', upload.single('imagen'), async (req, res) => {
+   try {
+     if (!req.file) return res.status(400).json({ error: 'No file' });
+     const buffer = req.file.buffer;
+     const uploadStream = cloudinary.uploader.upload_stream(
+       { resource_type: 'image' },
+       (err, result) => {
+         if (err) {
+           console.error('Cloud error', err); 
+           return res.status(500).json({ error: err.message });
+         }
+         res.json({ url: result.secure_url });
+       }
+     );
+     uploadStream.end(buffer);
+   } catch (e) {
+     console.error(e);
+     res.status(500).json({ error: e.message });
+  }
+ });
 
 
 
-// EXPORTACIÓN
+
 
 module.exports = app;
