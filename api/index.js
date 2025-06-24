@@ -31,7 +31,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 // });
 
 
-// Subida de imagen a Cloudinary
+// Subida de imagen a Cloudinary con DEVOLUCIÓN de URL
 app.post('/api/imagen/upload', upload.single('imagen'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'No file' });
