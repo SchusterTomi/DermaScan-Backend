@@ -62,12 +62,10 @@ app.post('/api/paciente', async (req, res) => {
   try {
     const { nombre, apellido, dni, gmail } = req.body;
 
-    // Vemos si esta todo completo
     if (!nombre || !apellido || !dni || !gmail) {
       return res.status(400).json({ error: 'Faltan datos del paciente' });
     }
 
-    // Insertamos el paciente y retornamos el registro insertado
     const result = await pool.query(
       'INSERT INTO pacientes (nombre, apellido, dni, gmail) VALUES ($1, $2, $3, $4) RETURNING *',
       [nombre, apellido, dni, gmail]
@@ -75,10 +73,15 @@ app.post('/api/paciente', async (req, res) => {
 
     res.status(201).json({ mensaje: 'Paciente guardado', paciente: result.rows[0] });
   } catch (error) {
+    if (error.code === '23505') {
+      return res.status(400).json({ error: 'El DNI ya está registrado' });
+    }
+
     console.error('Error al guardar paciente:', error);
     res.status(500).json({ error: 'Error al guardar paciente' });
   }
 });
+
 
 // FUNCIONALIDAD
 // (FUTURA) (IMÁGENES)
