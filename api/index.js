@@ -31,29 +31,57 @@ const upload = multer({ storage: multer.memoryStorage() });
 // });
 
 
-// Subida de imagen a Cloudinary con DEVOLUCIÓN de URL
+//FUNCIONALIDAD
+// (IMÁGEN)
+
 app.post('/api/imagen/upload', upload.single('imagen'), async (req, res) => {
   try {
-    if (!req.file) return res.status(400).json({ error: 'No file' });
+    const { paciente_id } = req.body;
+
+    if (!req.file) return res.status(400).json({ error: 'No se recibió imagen' });
+    if (!paciente_id) return res.status(400).json({ error: 'Falta paciente_id' });
+
     const buffer = req.file.buffer;
+
     const uploadStream = cloudinary.uploader.upload_stream(
       { resource_type: 'image' },
-      (err, result) => {
+      async (err, result) => {
         if (err) {
-          console.error('Cloud error', err);
-          return res.status(500).json({ error: err.message });
+          console.error('Error Cloudinary:', err);
+          return res.status(500).json({ error: 'Error al subir imagen' });
         }
-        res.json({ url: result.secure_url });
+
+        const imageUrl = result.secure_url;
+
+        // Simulación de IA (REEMPLAZAR MAS TARDE POR LO DE CHITO)
+        const opcionesSeveridad = ['Leve', 'Moderada', 'Grave'];
+        const severidad = opcionesSeveridad[Math.floor(Math.random() * opcionesSeveridad.length)];
+
+        try {
+        // Tabla historial
+          await pool.query(
+            'INSERT INTO historial (imagen, severidad, paciente_id) VALUES ($1, $2, $3)',
+            [imageUrl, severidad, paciente_id]
+          );
+
+          res.status(201).json({
+            mensaje: 'Imagen subida, analizada y guardada',
+            url: imageUrl,
+            severidad: severidad
+          });
+        } catch (dbErr) {
+          console.error('Error al guardar en historial:', dbErr);
+          return res.status(500).json({ error: 'Error al guardar en DB' });
+        }
       }
     );
+
     uploadStream.end(buffer);
   } catch (e) {
-    console.error(e);
+    console.error('Error general:', e);
     res.status(500).json({ error: e.message });
   }
 });
-
-module.exports = app;
 
 // FUNCIONALIDAD 
 // (CREAR PACIENTES)
