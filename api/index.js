@@ -83,7 +83,7 @@ app.post('/api/imagen/upload', upload.single('imagen'), async (req, res) => {
   }
 });
 
-module.exports.handler = serverless(app);
+module.exports = serverless(app);
 
 // FUNCIONALIDAD 
 // (CREAR PACIENTES)
