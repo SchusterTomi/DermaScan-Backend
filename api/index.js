@@ -33,7 +33,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 //FUNCIONALIDAD
 // (IMÁGEN)
-
+const serverless = require('serverless-http');
 app.post('/api/imagen/upload', upload.single('imagen'), async (req, res) => {
   try {
     const { paciente_id } = req.body;
@@ -82,6 +82,8 @@ app.post('/api/imagen/upload', upload.single('imagen'), async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 });
+
+module.exports.handler = serverless(app);
 
 // FUNCIONALIDAD 
 // (CREAR PACIENTES)
