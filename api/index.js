@@ -15,8 +15,20 @@ app.use(express.json());
 // CONFIGURACIÓN DE MULTER
 const upload = multer({ storage: multer.memoryStorage() });
 
-// FUNCIONALIDAD: SUBIR IMAGEN Y GUARDAR URL EN BASE DE DATOS
-const serverless = require('serverless-http');
+// Ruta para testear la DB
+
+//app.get('/api/test-db', async (req, res) => {
+ // try {
+ //   const result = await pool.query('SELECT NOW()');
+  //  res.json({ status: 'Conectado!', hora: result.rows[0].now });
+ // } catch (e) {
+ //   console.error(e);
+  //  res.status(500).json({ error: 'Error DB' });
+  // }
+// });
+
+
+// Subida de imagen a Cloudinary
 app.post('/api/imagen/upload', upload.single('imagen'), async (req, res) => {
   try {
     const { paciente_id } = req.body;
