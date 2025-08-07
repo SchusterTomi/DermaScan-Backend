@@ -61,7 +61,7 @@ app.post('/api/imagen/upload', upload.single('imagen'), async (req, res) => {
   }
 });
 
-module.exports = serverless(app);
+module.exports = app;
 
 // ----------------------------------------
 // RUTA PARA CREAR PACIENTES (COMENTADA)
