@@ -1,5 +1,4 @@
 // IMPORTACIONES
-
 const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
@@ -9,30 +8,14 @@ require('dotenv').config();
 
 const app = express();
 
-//MIDDLEWARES
-
+// MIDDLEWARES
 app.use(cors());
 app.use(express.json());
 
-// CONFIGURACION DE MULTER 
-
+// CONFIGURACIÓN DE MULTER
 const upload = multer({ storage: multer.memoryStorage() });
 
-// Ruta para testear la DB
-
-//app.get('/api/test-db', async (req, res) => {
- // try {
- //   const result = await pool.query('SELECT NOW()');
-  //  res.json({ status: 'Conectado!', hora: result.rows[0].now });
- // } catch (e) {
- //   console.error(e);
-  //  res.status(500).json({ error: 'Error DB' });
-  // }
-// });
-
-
-//FUNCIONALIDAD
-// (IMÁGEN)
+// FUNCIONALIDAD: SUBIR IMAGEN Y GUARDAR URL EN BASE DE DATOS
 const serverless = require('serverless-http');
 app.post('/api/imagen/upload', upload.single('imagen'), async (req, res) => {
   try {
@@ -53,21 +36,16 @@ app.post('/api/imagen/upload', upload.single('imagen'), async (req, res) => {
 
         const imageUrl = result.secure_url;
 
-        // Simulación de IA (REEMPLAZAR MAS TARDE POR LO DE CHITO)
-        const opcionesSeveridad = ['Leve', 'Moderada', 'Grave'];
-        const severidad = opcionesSeveridad[Math.floor(Math.random() * opcionesSeveridad.length)];
-
         try {
-        // Tabla historial
+          // Guardar solo la imagen en la tabla historial (sin severidad)
           await pool.query(
-            'INSERT INTO historial (imagen, severidad, paciente_id) VALUES ($1, $2, $3)',
-            [imageUrl, severidad, paciente_id]
+            'INSERT INTO historial (imagen, paciente_id) VALUES ($1, $2)',
+            [imageUrl, paciente_id]
           );
 
           res.status(201).json({
-            mensaje: 'Imagen subida, analizada y guardada',
-            url: imageUrl,
-            severidad: severidad
+            mensaje: 'Imagen subida y guardada en historial',
+            url: imageUrl
           });
         } catch (dbErr) {
           console.error('Error al guardar en historial:', dbErr);
@@ -85,9 +63,11 @@ app.post('/api/imagen/upload', upload.single('imagen'), async (req, res) => {
 
 module.exports = serverless(app);
 
-// FUNCIONALIDAD 
-// (CREAR PACIENTES)
+// ----------------------------------------
+// RUTA PARA CREAR PACIENTES (COMENTADA)
+// ----------------------------------------
 
+/*
 app.post('/api/paciente', async (req, res) => {
   try {
     const { nombre, apellido, dni, gmail } = req.body;
@@ -111,5 +91,4 @@ app.post('/api/paciente', async (req, res) => {
     res.status(500).json({ error: 'Error al guardar paciente' });
   }
 });
-
-
+*/
