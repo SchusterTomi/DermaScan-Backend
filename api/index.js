@@ -90,6 +90,24 @@ app.get('/api/historial/:perfil_id', async (req, res) => {
   }
 });
 
+// PARA VER ERROR (CHATGPT)
+app.get('/api/historial/:perfil_id', async (req, res) => {
+  const { perfil_id } = req.params;
+
+  try {
+    const result = await pool.query(
+      'SELECT id, imagen, zona, severidad, fecha FROM historial WHERE perfil_id = $1 ORDER BY fecha DESC',
+      [perfil_id]
+    );
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error al obtener historial:', err); // Esto ya está
+    console.error('Detalle del error:', err.message);   // 👈 Agregá esto
+    res.status(500).json({ error: 'Error al obtener historial' });
+  }
+});
+
 
 module.exports = app;
 
