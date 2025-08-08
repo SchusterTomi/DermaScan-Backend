@@ -5,6 +5,7 @@ const multer = require('multer');
 const cloudinary = require('../cloudinary');
 const pool = require('./db');
 require('dotenv').config();
+const bcrypt = require('bcrypt');
 
 const app = express();
 
@@ -72,7 +73,6 @@ app.post('/api/imagen/upload', upload.single('imagen'), async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 });
-
 // Busqueda de historial (GET)
 app.get('/api/historial/:perfil_id', async (req, res) => {
   const { perfil_id } = req.params;
@@ -86,8 +86,82 @@ app.get('/api/historial/:perfil_id', async (req, res) => {
     res.json(result.rows);
   } catch (err) {
     console.error('Error al obtener historial:', err); // Esto ya está
-    console.error('Detalle del error:', err.message);   // 👈 Agregá esto
     res.status(500).json({ error: 'Error al obtener historial' });
+  }
+});
+
+// REGISTRO DE CUENTA
+
+const bcrypt = require('bcrypt');
+
+app.post('/api/registro', async (req, res) => {
+  const { nombre_completo, correo_electronico, contrasena } = req.body;
+
+  if (!nombre_completo || !correo_electronico || !contrasena) {
+    return res.status(400).json({ error: 'Faltan campos obligatorios' });
+  }
+
+  try {
+    const existe = await pool.query(
+      'SELECT * FROM perfiles WHERE correo_electronico = $1',
+      [correo_electronico]
+    );
+
+    if (existe.rows.length > 0) {
+      return res.status(400).json({ error: 'El correo ya está registrado' });
+    }
+
+    const hashedPassword = await bcrypt.hash(contrasena, 10);
+
+    const nuevo = await pool.query(
+      'INSERT INTO perfiles (nombre_completo, correo_electronico, contrasena) VALUES ($1, $2, $3) RETURNING id',
+      [nombre_completo, correo_electronico, hashedPassword]
+    );
+
+    res.status(201).json({
+      mensaje: 'Registro exitoso',
+      perfil_id: nuevo.rows[0].id
+    });
+  } catch (err) {
+    console.error('Error en registro:', err.message);
+    res.status(500).json({ error: 'Error en el servidor' });
+  }
+});
+
+// LOGIN DE CUENTA
+
+app.post('/api/login', async (req, res) => {
+  const { correo_electronico, contrasena } = req.body;
+
+  if (!correo_electronico || !contrasena) {
+    return res.status(400).json({ error: 'Faltan campos' });
+  }
+
+  try {
+    const result = await pool.query(
+      'SELECT * FROM perfiles WHERE correo_electronico = $1',
+      [correo_electronico]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(401).json({ error: 'Credenciales inválidas' });
+    }
+
+    const perfil = result.rows[0];
+
+    const passwordValida = await bcrypt.compare(contrasena, perfil.contrasena);
+    if (!passwordValida) {
+      return res.status(401).json({ error: 'Credenciales inválidas' });
+    }
+
+    res.json({
+      mensaje: 'Login exitoso',
+      perfil_id: perfil.id,
+      nombre_completo: perfil.nombre_completo
+    });
+  } catch (err) {
+    console.error('Error en login:', err.message);
+    res.status(500).json({ error: 'Error al iniciar sesión' });
   }
 });
 
