@@ -5,7 +5,7 @@ const multer = require('multer');
 const cloudinary = require('../cloudinary');
 const pool = require('./db');
 require('dotenv').config();
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt'); // para el encriptado
 
 const app = express();
 
@@ -92,7 +92,6 @@ app.get('/api/historial/:perfil_id', async (req, res) => {
 
 // REGISTRO DE CUENTA
 
-const bcrypt = require('bcrypt');
 
 app.post('/api/registro', async (req, res) => {
   const { nombre_completo, correo_electronico, contrasena } = req.body;
