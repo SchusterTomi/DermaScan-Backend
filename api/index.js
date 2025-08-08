@@ -28,7 +28,7 @@ app.get('/api/test-db', async (req, res) => {
  });
 
 
-// Subida de imagen a Cloudinary, vinculada a perfil
+// Subida de imagen a Cloudinary, vinculada a perfil (POST)
 app.post('/api/imagen/upload', upload.single('imagen'), async (req, res) => {
   try {
     const { perfil_id, zona, severidad } = req.body;
@@ -70,6 +70,23 @@ app.post('/api/imagen/upload', upload.single('imagen'), async (req, res) => {
   } catch (e) {
     console.error('Error general:', e);
     res.status(500).json({ error: e.message });
+  }
+});
+
+// Busqueda de historial (GET)
+app.get('/api/historial/:perfil_id', async (req, res) => {
+  const { perfil_id } = req.params;
+
+  try {
+    const result = await pool.query(
+      'SELECT id, imagen, zona, severidad, fecha FROM historial WHERE perfil_id = $1 ORDER BY fecha DESC',
+      [perfil_id]
+    );
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error al obtener historial:', err);
+    res.status(500).json({ error: 'Error al obtener historial' });
   }
 });
 
