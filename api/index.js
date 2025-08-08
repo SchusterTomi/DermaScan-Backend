@@ -31,7 +31,7 @@ app.get('/api/test-db', async (req, res) => {
 // Subida de imagen a Cloudinary, vinculada a perfil
 app.post('/api/imagen/upload', upload.single('imagen'), async (req, res) => {
   try {
-    const { perfil_id } = req.body;
+    const { perfil_id, zona, severidad } = req.body;
 
     if (!req.file) return res.status(400).json({ error: 'No se recibió imagen' });
     if (!perfil_id) return res.status(400).json({ error: 'Falta perfil_id' });
@@ -50,12 +50,13 @@ app.post('/api/imagen/upload', upload.single('imagen'), async (req, res) => {
 
         try {
           await pool.query(
-            'INSERT INTO historial (imagen, perfil_id) VALUES ($1, $2)',
-            [imageUrl, perfil_id]
+            `INSERT INTO historial (imagen, perfil_id, zona, severidad, fecha)
+             VALUES ($1, $2, $3, $4, NOW())`,
+            [imageUrl, perfil_id, zona, severidad]
           );
 
           res.status(201).json({
-            mensaje: 'Imagen subida y guardada en historial',
+            mensaje: 'Imagen subida con datos extra',
             url: imageUrl
           });
         } catch (dbErr) {
@@ -71,6 +72,7 @@ app.post('/api/imagen/upload', upload.single('imagen'), async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 });
+
 
 module.exports = app;
 
