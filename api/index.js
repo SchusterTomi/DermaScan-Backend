@@ -17,24 +17,24 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 // Ruta para testear la DB
 
-//app.get('/api/test-db', async (req, res) => {
- // try {
- //   const result = await pool.query('SELECT NOW()');
-  //  res.json({ status: 'Conectado!', hora: result.rows[0].now });
- // } catch (e) {
- //   console.error(e);
-  //  res.status(500).json({ error: 'Error DB' });
-  // }
-// });
+app.get('/api/test-db', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT NOW()');
+    res.json({ status: 'Conectado!', hora: result.rows[0].now });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Error DB' });
+   }
+ });
 
 
-// Subida de imagen a Cloudinary
+// Subida de imagen a Cloudinary, vinculada a perfil
 app.post('/api/imagen/upload', upload.single('imagen'), async (req, res) => {
   try {
-    const { paciente_id } = req.body;
+    const { perfil_id } = req.body;
 
     if (!req.file) return res.status(400).json({ error: 'No se recibió imagen' });
-    if (!paciente_id) return res.status(400).json({ error: 'Falta paciente_id' });
+    if (!perfil_id) return res.status(400).json({ error: 'Falta perfil_id' });
 
     const buffer = req.file.buffer;
 
@@ -49,10 +49,9 @@ app.post('/api/imagen/upload', upload.single('imagen'), async (req, res) => {
         const imageUrl = result.secure_url;
 
         try {
-          // Guardar solo la imagen en la tabla historial (sin severidad)
           await pool.query(
-            'INSERT INTO historial (imagen, paciente_id) VALUES ($1, $2)',
-            [imageUrl, paciente_id]
+            'INSERT INTO historial (imagen, perfil_id) VALUES ($1, $2)',
+            [imageUrl, perfil_id]
           );
 
           res.status(201).json({
