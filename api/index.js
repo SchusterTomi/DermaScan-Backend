@@ -91,10 +91,8 @@ app.get('/api/historial/:perfil_id', async (req, res) => {
 });
 
 // REGISTRO DE CUENTA
-
-
 app.post('/api/registro', async (req, res) => {
-  const { nombre_completo, correo_electronico, contrasena } = req.body;
+  const { nombre_completo, correo_electronico, contrasena, telefono } = req.body;
 
   if (!nombre_completo || !correo_electronico || !contrasena) {
     return res.status(400).json({ error: 'Faltan campos obligatorios' });
@@ -113,8 +111,9 @@ app.post('/api/registro', async (req, res) => {
     const hashedPassword = await bcrypt.hash(contrasena, 10);
 
     const nuevo = await pool.query(
-      'INSERT INTO perfiles (nombre_completo, correo_electronico, contrasena) VALUES ($1, $2, $3) RETURNING id',
-      [nombre_completo, correo_electronico, hashedPassword]
+      `INSERT INTO perfiles (nombre_completo, correo_electronico, contrasena, telefono) 
+       VALUES ($1, $2, $3, $4) RETURNING id`,
+      [nombre_completo, correo_electronico, hashedPassword, telefono || null] // 👈 si no lo mandan, guarda NULL
     );
 
     res.status(201).json({
