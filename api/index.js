@@ -29,48 +29,31 @@ app.get('/api/test-db', async (req, res) => {
  });
 
 
-// Subida de imagen a Cloudinary, vinculada a perfil (POST)
-app.post('/api/imagen/upload', upload.single('imagen'), async (req, res) => {
+// ✅ Guardar resultado de IA en historial
+app.post('/api/historial', async (req, res) => {
   try {
-    const { perfil_id, zona, severidad } = req.body;
+    const { perfil_id, imagen, lesiones, zona, fecha } = req.body;
 
-    if (!req.file) return res.status(400).json({ error: 'No se recibió imagen' });
-    if (!perfil_id) return res.status(400).json({ error: 'Falta perfil_id' });
+    // Validación básica
+    if (!perfil_id || !imagen || !lesiones) {
+      return res.status(400).json({ error: 'Faltan datos requeridos' });
+    }
 
-    const buffer = req.file.buffer;
-
-    const uploadStream = cloudinary.uploader.upload_stream(
-      { resource_type: 'image' },
-      async (err, result) => {
-        if (err) {
-          console.error('Error Cloudinary:', err);
-          return res.status(500).json({ error: 'Error al subir imagen' });
-        }
-
-        const imageUrl = result.secure_url;
-
-        try {
-          await pool.query(
-            `INSERT INTO historial (imagen, perfil_id, zona, severidad, fecha)
-             VALUES ($1, $2, $3, $4, NOW())`,
-            [imageUrl, perfil_id, zona, severidad]
-          );
-
-          res.status(201).json({
-            mensaje: 'Imagen subida con datos extra',
-            url: imageUrl
-          });
-        } catch (dbErr) {
-          console.error('Error al guardar en historial:', dbErr);
-          return res.status(500).json({ error: 'Error al guardar en DB' });
-        }
-      }
+    // Guardar en Neon
+    const result = await pool.query(
+      `INSERT INTO historial (perfil_id, imagen, lesiones, zona, fecha)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING *`,
+      [perfil_id, imagen, lesiones, zona, fecha]
     );
 
-    uploadStream.end(buffer);
-  } catch (e) {
-    console.error('Error general:', e);
-    res.status(500).json({ error: e.message });
+    res.status(201).json({
+      mensaje: 'Historial guardado con éxito',
+      data: result.rows[0],
+    });
+  } catch (error) {
+    console.error('Error guardando historial:', error);
+    res.status(500).json({ error: 'Error en el servidor' });
   }
 });
 // Busqueda de historial (GET)
