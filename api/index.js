@@ -65,7 +65,7 @@ app.get('/api/historial/:perfil_id', async (req, res) => {
 
   try {
     const result = await pool.query(
-      'SELECT id, imagen, zona, severidad, fecha FROM historial WHERE perfil_id = $1 ORDER BY fecha DESC',
+      'SELECT id, imagen, zona, lesiones, fecha FROM historial WHERE perfil_id = $1 ORDER BY fecha DESC',
       [perfil_id]
     );
 
