@@ -32,7 +32,7 @@ app.get('/api/test-db', async (req, res) => {
   }
 });
 
-// GUARDAR HISTORIAL (POST)
+// GUARDAR HISTORIAL (POST) (/api/historial)
 app.post('/api/historial', async (req, res) => {
   try {
     const { perfil_id, imagen, lesiones, zona, fecha } = req.body;
@@ -59,7 +59,7 @@ app.post('/api/historial', async (req, res) => {
 });
 
 
-// OBTENER HISTORIAL (GET)
+// OBTENER HISTORIAL (GET) (/api/historial/:perfil_id)
 app.get('/api/historial/:perfil_id', async (req, res) => {
   const { perfil_id } = req.params;
 
@@ -76,7 +76,7 @@ app.get('/api/historial/:perfil_id', async (req, res) => {
   }
 });
 
-// REGISTRO DE USUARIO
+// REGISTRO DE USUARIO (POST)(/api/registro)
 app.post('/api/registro', async (req, res) => {
   const { nombre_completo, correo_electronico, contrasena, telefono } = req.body;
 
@@ -112,7 +112,7 @@ app.post('/api/registro', async (req, res) => {
   }
 });
 
-// LOGIN DE USUARIO
+// LOGIN DE USUARIO (POST)(/api/login)
 app.post('/api/login', async (req, res) => {
   const { correo_electronico, contrasena } = req.body;
 
@@ -150,7 +150,8 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-// ACTUALIZAR PERFIL
+/*
+ // ACTUALIZAR PERFIL (PUT)(/api/perfil/update)
 app.put('/api/perfil/update', async (req, res) => {
   const { perfil_id, nombre_completo, correo_electronico, telefono } = req.body;
 
@@ -182,13 +183,12 @@ app.put('/api/perfil/update', async (req, res) => {
     res.status(500).json({ error: 'Error en el servidor' });
   }
 });
+*/
 
 // EXPORTAR
 module.exports = app;
 
-// ----------------------------------------
 // RUTA PARA CREAR PACIENTES (COMENTADA)
-// ----------------------------------------
 
 /*
 app.post('/api/paciente', async (req, res) => {
