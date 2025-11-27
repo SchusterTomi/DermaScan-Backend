@@ -150,40 +150,6 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-/*
- // ACTUALIZAR PERFIL (PUT)(/api/perfil/update)
-app.put('/api/perfil/update', async (req, res) => {
-  const { perfil_id, nombre_completo, correo_electronico, telefono } = req.body;
-
-  if (!perfil_id) {
-    return res.status(400).json({ error: 'perfil_id requerido' });
-  }
-
-  try {
-    const result = await pool.query(
-      `UPDATE perfiles 
-       SET nombre_completo = COALESCE($1, nombre_completo),
-           correo_electronico = COALESCE($2, correo_electronico),
-           telefono = COALESCE($3, telefono)
-       WHERE id = $4
-       RETURNING id, nombre_completo, correo_electronico, telefono`,
-      [nombre_completo, correo_electronico, telefono, perfil_id]
-    );
-
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Perfil no encontrado' });
-    }
-
-    res.json({
-      mensaje: 'Perfil actualizado correctamente',
-      perfil: result.rows[0]
-    });
-  } catch (err) {
-    console.error('Error al actualizar perfil:', err.message);
-    res.status(500).json({ error: 'Error en el servidor' });
-  }
-});
-*/
 
 // EXPORTAR
 module.exports = app;
